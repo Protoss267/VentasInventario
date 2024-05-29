@@ -28,28 +28,25 @@ class CreateSoldService
 
     public function __invoke(Request $request)
     {
-        /** @var ArrayCollection $items */
+
         $items=[];
         $gains=0.0;
         $data=json_decode($request->getContent(),true);
         $sold= new Sold($data['transfer']);
-        $item=new Item();
+
         $items=[];
         foreach ($data['products'] as $productItem)
         {
             $product= $this->productRepository->findOneByCod($productItem['codigo']);
-            if($product != null)
+            if($product !== null)
             {
+                $item=new Item();
                 $item->setAmount($productItem['amount']);
                 $item->setProduct($product);
                 $item->setPrice($product->getPriceF());
                 $item->setSold($sold);
 
-                $items[]=[
-                    'product'=>$product,
-                    'price'=>$product->getPriceF(),
-                    'amount'=>$productItem['amount']
-                ];
+                $items[]=$item;
 
 
             }else {
@@ -58,9 +55,9 @@ class CreateSoldService
         }
         foreach ($items as $item)
         {
-            $gains +=$item['price'] * $item['amount'];
-            dump($item);
-            $item['product']->setStock($item->getProduct()->getStock()-$item->getAmount());
+            $gains +=$item->getPrice()*$item->getAmount();
+
+            $item->getProduct()->setStock($item->getProduct()->getStock()-$item->getAmount());
             $this->productRepository->save($item->getProduct());
 
         }
@@ -69,10 +66,10 @@ class CreateSoldService
 
         $array = new ArrayCollection($items);
         $sold->setItem($array);
-
-        $this->itemRepository->save($item);
         $this->repository->save($sold);
 
-        return new JsonResponse(['message'=>'Venta Exitosa'],JsonResponse::HTTP_OK);
+
+
+        return new JsonResponse(['message'=>$sold->toArray()],JsonResponse::HTTP_OK);
     }
 }

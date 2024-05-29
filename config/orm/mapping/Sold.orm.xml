@@ -8,6 +8,10 @@
         <field name="amount" column="total" type="decimal" scale="2" precision="10"/>
         <field name="tranfer" column="transferencia" type="boolean"/>
 
-        <one-to-many field="items" target-entity="App\Entity\Item" mapped-by="sold"/>
+        <one-to-many field="items" target-entity="App\Entity\Item" mapped-by="sold">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
     </entity>
 </doctrine-mapping>

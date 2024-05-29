@@ -65,6 +65,18 @@ class Sold
         $this->amount = $amount;
     }
 
+    public function toArray():array
+    {
+        return [
+            'id'=>$this->id,
+            'amount'=>$this->amount,
+            'transfer'=>$this->tranfer,
+            'items'=>array_map(function (Item $item):array{
+                 return $item->toArray();
+            },$this->items->toArray()),
+        ];
+    }
+
 
 
 

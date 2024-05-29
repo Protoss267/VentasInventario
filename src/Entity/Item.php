@@ -71,5 +71,16 @@ class Item
         $this->sold = $sold;
     }
 
+    public function toArray():array
+    {
+        return [
+            'id'=>$this->id,
+            'product'=>$this->product,
+            'price'=>$this->price,
+            'amount'=>$this->amount,
+            'sold'=>$this->sold
+        ];
+    }
+
 
 }

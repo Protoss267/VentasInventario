@@ -6,7 +6,7 @@
         <field name="amount" type="float" />
         <field name="price" type="float"/>
 
-        <one-to-one field="product" target-entity="App\Entity\Product"/>
+        <many-to-one field="product" target-entity="App\Entity\Product"/>
         <many-to-one field="sold" target-entity="App\Entity\Sold" inversed-by="items"/>
     </entity>
 </doctrine-mapping>
