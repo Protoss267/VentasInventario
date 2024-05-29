@@ -1,3 +1,58 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+api_login_check:
+  path: /api/login_check
+
+#Usuarios
+api_user_list:
+  path: /api/admin/userList
+  controller: App\Controller\Users\GetUsersController
+  methods: GET
+api_user_create:
+  path: /api/admin/userCreate
+  controller: App\Controller\Users\CreateUserController
+  methods: POST
+api_user_update:
+  path: /api/admin/userUpdate/{id}
+  controller: App\Controller\Users\UpdateUserController
+  methods: PUT
+api_user_delete:
+  path: /api/admin/userDelete/{id}
+  controller: App\Controller\Users\DeleteUserController
+  methods: DELETE
+api_user_getByUsername:
+  path: /api/admin/userByUsername/{username}
+  controller: App\Controller\Users\GetUserByUsernameController
+  methods: GET
+#Productos
+api_product_list:
+  path: /api/product/list
+  controller: App\Controller\Products\GetProductsController
+  methods: GET
+api_product_create:
+  path: /api/product/create
+  controller: App\Controller\Products\CreateProductController
+  methods: POST
+api_product_update:
+  path: /api/product/update/{id}
+  controller: App\Controller\Products\UpdateProductController
+  methods: PUT
+api_product_delete:
+  path: /api/product/delete/{id}
+  controller: App\Controller\Products\DeleteProductController
+  methods: DELETE
+api_product_get:
+  path: /api/product/get/{codigo}
+  controller: App\Controller\Products\GetOneProductController
+  methods: GET
+#Ventas
+api_sold_create:
+  path: /api/sold/create
+  controller: App\Controller\Solds\CreateSoldController
+  methods: POST
+api_sold_delete:
+  path: /api/sold/delete/{id}
+  controller: App\Controller\Solds\DeleteSoldController
+  methods: GET
+api_sold_get:
+  path: /api/sold/list
+  controller: App\Controller\Solds\GetSoldsController
+  methods: GET

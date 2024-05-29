@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <entity name="App\Entity\Product" table="product">
+        <id name="id" length="36" type="string"/>
+
+        <field name="codigo" type="string" length="200" unique="true"/>
+        <field name="name" type="string" length="255"/>
+        <field name="priceI" type="float" scale="2" precision="10" />
+        <field name="priceF" type="float" scale="2" precision="10"/>
+        <field name="dateIn" type="datetime"/>
+        <field name="stock" type="float"/>
+        <field name="dateUpdated" type="datetime"/>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="preUpdate" method="markAsUpdate"/>
+        </lifecycle-callbacks>
+
+        <indexes>
+            <index columns="codigo" name="cod_idx"/>
+            <index columns="name" name="name_idx"/>
+        </indexes>
+
+        <unique-constraints>
+            <unique-constraint name="U_cod" columns="codigo"/>
+        </unique-constraints>
+
+
+
+
+
+    </entity>
+
+</doctrine-mapping>

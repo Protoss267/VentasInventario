@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <entity name="App\Entity\Sold" table="venta">
+        <id name="id" length="36" type="string"/>
+
+
+        <field name="date" column="fecha_venta" type="datetime"/>
+        <field name="amount" column="total" type="decimal" scale="2" precision="10"/>
+        <field name="tranfer" column="transferencia" type="boolean"/>
+
+        <one-to-many field="items" target-entity="App\Entity\Item" mapped-by="sold"/>
+    </entity>
+</doctrine-mapping>
