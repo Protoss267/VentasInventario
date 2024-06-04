@@ -101,6 +101,18 @@ class User implements UserInterface, UserPasswordEncoderInterface
         $this->isAdmin = $isAdmin;
     }
 
+    public function toArray():array
+    {
+        return [
+            'id'=>$this->id,
+            'username'=>$this->username,
+            'name'=>$this->name,
+            'created'=>$this->created_at,
+            'updated'=>$this->updated_at,
+            'isAdmin'=>$this->isAdmin
+        ];
+    }
+
 
     public function getRoles():array
     {
@@ -136,4 +148,5 @@ class User implements UserInterface, UserPasswordEncoderInterface
     {
         // TODO: Implement needsRehash() method.
     }
+
 }

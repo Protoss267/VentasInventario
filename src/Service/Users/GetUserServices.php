@@ -28,7 +28,7 @@ class GetUserServices
                     'id'=>$user->getId(),
                     'username'=>$user->getUsername(),
                     'name'=>$user->getName(),
-                    'admin'=>$user->isAdmin(),
+                    'isAdmin'=>$user->isAdmin(),
                     'created'=>$user->getCreated(),
                     'updated'=>$user->getUpdated(),
                 ];

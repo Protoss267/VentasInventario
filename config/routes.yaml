@@ -40,8 +40,12 @@ api_product_delete:
   controller: App\Controller\Products\DeleteProductController
   methods: DELETE
 api_product_get:
-  path: /api/product/get/{codigo}
+  path: /api/product/get/{cod}
   controller: App\Controller\Products\GetOneProductController
+  methods: GET
+api_product_lowStock:
+  path: /api/product/lowStock
+  controller: App\Controller\Products\GetProductsLowStockController
   methods: GET
 #Ventas
 api_sold_create:

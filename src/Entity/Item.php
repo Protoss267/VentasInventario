@@ -75,10 +75,10 @@ class Item
     {
         return [
             'id'=>$this->id,
-            'product'=>$this->product,
             'price'=>$this->price,
             'amount'=>$this->amount,
-            'sold'=>$this->sold
+            'sold'=>$this->sold->getId(),
+            'product'=>$this->product->toArray()
         ];
     }
 

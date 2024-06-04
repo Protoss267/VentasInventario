@@ -27,11 +27,7 @@ class GetSoldService
         foreach ($solds as $sold)
         {
             $data[]=[
-                'id'=>$sold->getId(),
-                'total'=>$sold->getAmount(),
-                'products'=>$sold->getItem(),
-                'date'=>$sold->getDate(),
-                'transfer'=>$sold->isTranfer(),
+                $sold->toArray()
             ];
         }
 

@@ -32,4 +32,15 @@ class SoldRepository extends BaseRepository
         return $this->objectRepository->createQueryBuilder('s')
             ->getQuery()->getResult();
     }
+
+    public function getSoldByDay(\DateTime $fecha= null)
+    {
+        if(!$fecha)
+        {
+            $fecha= new \DateTime();
+        }
+
+        return $this->objectRepository->createQueryBuilder('s')
+            ->where('s.date')
+    }
 }

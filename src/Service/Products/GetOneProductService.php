@@ -26,14 +26,7 @@ class GetOneProductService
         if($product != null)
         {
             $data=[
-                'id'=>$product->getId(),
-                'codigo'=>$product->getCodigo(),
-                'name'=>$product->getName(),
-                'priceI'=>$product->getPriceI(),
-                'priceF'=>$product->getPriceF(),
-                'stock'=>$product->getStock(),
-                'created'=>$product->getDateIn(),
-                'updated'=>$product->getDateUpdated(),
+                $product->toArray()
             ];
 
             $response->setData([

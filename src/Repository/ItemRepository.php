@@ -19,4 +19,8 @@ class ItemRepository extends BaseRepository
     {
         $this->saveEntity($item);
     }
+
+    public function delete(Item $item){
+        $this->deleteEntity($item);
+    }
 }

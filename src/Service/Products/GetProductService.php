@@ -25,16 +25,9 @@ class GetProductService
 
         /** @var Product $product */
         foreach ($products as $product){
-            $data[]=[
-              'id'=>$product->getId(),
-              'codigo'=>$product->getCodigo(),
-              'name'=>$product->getName(),
-              'priceI'=>$product->getPriceI(),
-              'priceF'=>$product->getPriceF(),
-              'stock'=>$product->getStock(),
-              'created'=>$product->getDateIn(),
-              'updated'=>$product->getDateUpdated(),
-            ];
+            $data[]=
+              $product->toArray();
+
         }
 
         $response->setData([

@@ -17,7 +17,7 @@ class Product
     private \DateTime $dateIn;
     private \DateTime $dateUpdated;
     private float $stock;
-    private $items;
+
 
 
     public function __construct(string $codigo, string $name, float $priceI, float $priceF, float $stock)
@@ -30,7 +30,6 @@ class Product
         $this->dateIn = new \DateTime('now');
         $this->dateUpdated = new \DateTime();
         $this->stock = $stock;
-        $this->items= new ArrayCollection();
     }
 
     public function getId(): string
@@ -93,23 +92,27 @@ class Product
         $this->dateUpdated = new \DateTime('now');
     }
 
-    /**
-     * @return float
-     */
     public function getStock(): float
     {
         return $this->stock;
     }
 
-    /**
-     * @param float $stock
-     */
     public function setStock(float $stock): void
     {
         $this->stock = $stock;
     }
 
-
-
-
+    public function toArray():array
+    {
+        return [
+            'id'=>$this->id,
+            'codigo'=>$this->codigo,
+            'name'=>$this->name,
+            'priceI'=>$this->priceI,
+            'priceF'=>$this->priceF,
+            'stock'=>$this->stock,
+            'dateIn'=>$this->dateIn->format('d-m-y'),
+            'dateUp'=>$this->dateUpdated
+        ];
+    }
 }
