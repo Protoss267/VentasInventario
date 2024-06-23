@@ -41,6 +41,11 @@ class SoldRepository extends BaseRepository
         }
 
         return $this->objectRepository->createQueryBuilder('s')
-            ->where('s.date');
+            ->where('s.date > :fechaI')
+            ->andwhere('s.date < :fechaF')
+            ->setParameter('fechaI',$fecha->format('Y-m-d').' '.'00:00:01')
+            ->setParameter('fechaF',$fecha->format('Y-m-d').' '.'23:59:59')
+            ->getQuery()
+            ->getResult();
     }
 }

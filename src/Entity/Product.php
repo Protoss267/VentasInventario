@@ -112,7 +112,7 @@ class Product
             'priceF'=>$this->priceF,
             'stock'=>$this->stock,
             'dateIn'=>$this->dateIn->format('d-m-y'),
-            'dateUp'=>$this->dateUpdated
+            'dateUp'=>$this->dateUpdated->format('d-m-y')
         ];
     }
 }
