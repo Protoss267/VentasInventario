@@ -4,6 +4,8 @@
 namespace App\Service\Solds;
 
 
+use App\Entity\Item;
+use App\Entity\Product;
 use App\Entity\Sold;
 use App\Repository\SoldRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +23,8 @@ class GetSoldsByDayService
         $data=[];
         $response = new JsonResponse();
         $total=0;
+        $coste=0;
+        $ganancia=0;
 
         $solds=$this->soldRepository->getSoldByDay();
 
@@ -31,7 +35,14 @@ class GetSoldsByDayService
                 'sold'=>$sold->toArray()
             ];
             $total+= $sold->getAmount();
+            /** @var Item $product */
+            foreach ($sold->getItem() as $product)
+            {
+                $coste+=$product->getProduct()->getPriceI()*$product->getAmount();
+            }
         }
+
+        $ganancia=$total-$coste;
 
 
 
@@ -39,7 +50,9 @@ class GetSoldsByDayService
         $response->setData([
             'success'=> true,
             'data'=>$data,
-            'total'=>$total
+            'total'=>$total,
+            'coste'=>$coste,
+            'ganancia'=>$ganancia
 
         ]);
 
