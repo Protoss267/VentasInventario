@@ -39,6 +39,7 @@ class GetSoldsByDayService
         $response->setData([
             'success'=> true,
             'data'=>$data,
+            'total'=>$total
 
         ]);
 
