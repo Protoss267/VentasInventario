@@ -41,6 +41,6 @@ class SoldRepository extends BaseRepository
         }
 
         return $this->objectRepository->createQueryBuilder('s')
-            ->where('s.date')
+            ->where('s.date');
     }
 }
