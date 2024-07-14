@@ -60,3 +60,7 @@ api_sold_get:
   path: /api/sold/list
   controller: App\Controller\Solds\GetSoldsController
   methods: GET
+api_sold_day:
+  path: /api/sold/listDay
+  controller: App\Controller\Solds\GetSoldsByDayController
+  methods: GET
