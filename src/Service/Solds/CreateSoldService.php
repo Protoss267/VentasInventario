@@ -30,46 +30,59 @@ class CreateSoldService
     {
 
         $items=[];
+        $response = new JsonResponse();
+        $respuesta=[];
         $gains=0.0;
         $data=json_decode($request->getContent(),true);
         $sold= new Sold($data['transfer']);
 
         $items=[];
-        foreach ($data['products'] as $productItem)
+        if(count($data['products'])<1)
         {
-            $product= $this->productRepository->findOneByCod($productItem['codigo']);
-            if($product !== null)
-            {
-                $item=new Item();
-                $item->setAmount($productItem['amount']);
-                $item->setProduct($product);
-                $item->setPrice($product->getPriceF());
-                $item->setSold($sold);
+            $respuesta=[
+                'success'=>false,
+                'data'=>'No hay productos en el carrito'
+            ];
+            $response->setData($respuesta);
+        }
+        else {
+            foreach ($data['products'] as $productItem) {
+                $product = $this->productRepository->findOneByCod($productItem['codigo']);
+                if ($product !== null) {
+                    $item = new Item();
+                    $item->setAmount($productItem['amount']);
+                    $item->setProduct($product);
+                    $item->setPrice($product->getPriceF());
+                    $item->setSold($sold);
 
-                $items[]=$item;
+                    $items[] = $item;
 
 
-            }else {
-                throw new \Exception(sprintf('El producto no se encontro en el sistema'));
+                } else {
+                    throw new \Exception(sprintf('El producto no se encontro en el sistema'));
+                }
             }
+            foreach ($items as $item) {
+                $gains += $item->getPrice() * $item->getAmount();
+
+                $item->getProduct()->setStock($item->getProduct()->getStock() - $item->getAmount());
+                $this->productRepository->save($item->getProduct());
+
+            }
+
+            $sold->setAmount($gains);
+
+            $array = new ArrayCollection($items);
+            $sold->setItem($array);
+            $this->repository->save($sold);
+            $respuesta=[
+                'success'=>true,
+                'data'=>$sold->toArray()
+            ];
+            $response->setData($respuesta);
         }
-        foreach ($items as $item)
-        {
-            $gains +=$item->getPrice()*$item->getAmount();
-
-            $item->getProduct()->setStock($item->getProduct()->getStock()-$item->getAmount());
-            $this->productRepository->save($item->getProduct());
-
-        }
-
-        $sold->setAmount($gains);
-
-        $array = new ArrayCollection($items);
-        $sold->setItem($array);
-        $this->repository->save($sold);
 
 
-
-        return new JsonResponse(['message'=>$sold->toArray()],JsonResponse::HTTP_OK);
+        return $response;
     }
 }
