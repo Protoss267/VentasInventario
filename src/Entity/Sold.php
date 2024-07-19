@@ -71,7 +71,7 @@ class Sold
             'id'=>$this->id,
             'amount'=>$this->amount,
             'transfer'=>$this->tranfer,
-            'fecha'=>$this->date->format('d-m-y'),
+            'fecha'=>$this->date->format('d-m-y h:i:s'),
             'items'=>array_map(function (Item $item):array{
                  return $item->toArray();
             },$this->items->toArray()),
