@@ -10,7 +10,7 @@ use App\Entity\Sold;
 use App\Repository\SoldRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class GetSoldsByDayService
+class GetSoldsByDateService
 {
     private SoldRepository $soldRepository;
 
@@ -18,7 +18,7 @@ class GetSoldsByDayService
         $this->soldRepository = $soldRepository;
     }
 
-    public function __invoke()
+    public function __invoke( $fechaI, $fechaF)
     {
         $data=[];
         $response = new JsonResponse();
@@ -26,7 +26,7 @@ class GetSoldsByDayService
         $coste=0;
         $ganancia=0;
 
-        $solds=$this->soldRepository->getSoldByDay();
+        $solds=$this->soldRepository->getSoldByDateRange($fechaI,$fechaF);
 
         /** @var Sold $sold */
         foreach($solds as $sold)

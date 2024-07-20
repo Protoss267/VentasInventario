@@ -38,7 +38,7 @@ class GetOneProductService
         }
         else {
             $response->setData([
-                'success' => true,
+                'success' => false,
                 'data' => 'El producto no se encuentra en el sistema'
             ]);
             return $response;
