@@ -25,7 +25,7 @@ class UpdateProductService
         $response= new JsonResponse();
 
         if ($product != null){
-            $product->setCod($result['codigo']);
+            $product->setCodigo($result['codigo']);
             $product->setName($result['name']);
             $product->setPriceI($result['priceI']);
             $product->setPriceF($result['priceF']);

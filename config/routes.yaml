@@ -68,3 +68,7 @@ api_sold_byID:
   path: /api/sold/{id}
   controller: App\Controller\Solds\GetOneSoldByIdController
   methods: GET
+api_sold_byRange:
+  path: /api/sold
+  controller: App\Controller\Solds\GetSoldsByDateController
+  methods: POST
