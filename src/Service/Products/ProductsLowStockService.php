@@ -27,15 +27,15 @@ class ProductsLowStockService
         /** @var Product $product */
         foreach ($products as $product)
         {
-            $data[]= [$product->toArray()];;
+            $data[]= $product->toArray();
         }
 
-        $response->setData($data);
+        $response->setData(['success'=>true,'data'=>$data]);
         }
         else
         {
             $data[]=[
-                'success'=>true,
+                'success'=>false,
                 'message'=>'No existen productos con baja existencia'
             ];
             $response->setData($data);

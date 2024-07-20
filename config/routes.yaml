@@ -55,7 +55,7 @@ api_sold_create:
 api_sold_delete:
   path: /api/sold/delete/{id}
   controller: App\Controller\Solds\DeleteSoldController
-  methods: GET
+  methods: DELETE
 api_sold_get:
   path: /api/sold/list
   controller: App\Controller\Solds\GetSoldsController
@@ -64,3 +64,11 @@ api_sold_day:
   path: /api/sold/listDay
   controller: App\Controller\Solds\GetSoldsByDayController
   methods: GET
+api_sold_byID:
+  path: /api/sold/{id}
+  controller: App\Controller\Solds\GetOneSoldByIdController
+  methods: GET
+api_sold_byRange:
+  path: /api/sold
+  controller: App\Controller\Solds\GetSoldsByDateController
+  methods: POST

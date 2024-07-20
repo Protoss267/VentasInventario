@@ -107,8 +107,8 @@ class User implements UserInterface, UserPasswordEncoderInterface
             'id'=>$this->id,
             'username'=>$this->username,
             'name'=>$this->name,
-            'created'=>$this->created_at,
-            'updated'=>$this->updated_at,
+            'created'=>$this->created_at->format('d-m-y'),
+            'updated'=>$this->updated_at->format('d-m-y'),
             'isAdmin'=>$this->isAdmin
         ];
     }
