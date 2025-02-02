@@ -72,3 +72,13 @@ api_sold_byRange:
   path: /api/sold
   controller: App\Controller\Solds\GetSoldsByDateController
   methods: POST
+
+#Dashboard
+api_dashboard_byWeek:
+  path: /api/dash/week
+  controller: App\Controller\DashBoard\ObtenerVentasSemanalesController
+  methods: GET
+api_dashboard_gananciasMensuales:
+  path: /api/dash/gananciamensual
+  controller: App\Controller\DashBoard\ObtenerGananciasMensualesController
+  methods: GET
