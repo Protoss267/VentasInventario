@@ -22,7 +22,7 @@ class ProductoServiceTest extends KernelTestCase
 //        $this->assertEquals('1', $product->getCodigo());
 //    }
 
-    Prueba de Integracion
+    //Prueba de Integracion
     public function testProductoPersistedInDatabase(): void
     {
         self::bootKernel();
