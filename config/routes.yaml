@@ -74,11 +74,19 @@ api_sold_byRange:
   methods: POST
 
 #Dashboard
-api_dashboard_byWeek:
-  path: /api/dash/week
-  controller: App\Controller\DashBoard\ObtenerVentasSemanalesController
+api_dash_ventasPorFecha:
+  path: /api/dash/ventasPorFecha
+  controller: App\Controller\DashBoard\ObtenerVentasTotalesPorFechaController
   methods: GET
-api_dashboard_gananciasMensuales:
-  path: /api/dash/gananciamensual
-  controller: App\Controller\DashBoard\ObtenerGananciasMensualesController
+api_dash_ventasPorFechaSemanaAnno:
+  path: /api/dash/ventasPorSemanaAnoo
+  controller: App\Controller\DashBoard\ObtenerVentasTotalesPorSemanaYAnnoController
+  methods: GET
+api_dash_ventasPorFechaMesAnno:
+  path: /api/dash/ventasPorMesAnno
+  controller: App\Controller\DashBoard\ObtenerVentasTotalesPorMesYAnnoController
+  methods: GET
+api_dash_productoVendidoPorMes:
+  path: /api/dash/productoMensual
+  controller: App\Controller\DashBoard\ProductoVendidoPorMesController
   methods: GET
