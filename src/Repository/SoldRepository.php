@@ -148,4 +148,75 @@ class SoldRepository extends BaseRepository
 
     }
 
+    public function getTotalIngresos(): float
+    {
+        return (float)$this->objectRepository->createQueryBuilder('s')
+            ->select('SUM(s.amount) AS total')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTotalCostos(): float
+    {
+        return (float) $this->objectRepository->createQueryBuilder('v')
+            ->select('SUM(i.amount * p.priceI) as total_costos')
+            ->join('v.items', 'i') // Relación con Item
+            ->join('i.product', 'p') // Relación con Producto
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getGananciaNetaPorDia(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                DATE(v.fecha_venta) AS fecha, 
+                SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
+            FROM sold v
+            JOIN item i ON v.id = i.sold_id
+            JOIN product p ON i.product_id = p.id
+            GROUP BY fecha
+            ORDER BY fecha ASC;
+        ";
+
+        return $conn->executeQuery($sql)->fetchAllAssociative();
+    }
+
+    public function getGananciaNetaPorSemana(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                YEAR(v.fecha_venta) AS anno, 
+                WEEK(v.fecha_venta, 1) AS semana, 
+                SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
+            FROM sold v
+            JOIN item i ON v.id = i.sold_id
+            JOIN product p ON i.product_id = p.id
+            GROUP BY anno, semana
+            ORDER BY anno, semana ASC;
+        ";
+
+        return $conn->executeQuery($sql)->fetchAllAssociative();
+    }
+
+    public function getGananciaNetaPorMes(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                YEAR(v.fecha_venta) AS anno, 
+                MONTH(v.fecha_venta) AS mes, 
+                SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
+            FROM sold v
+            JOIN item i ON v.id = i.sold_id
+            JOIN product p ON i.product_id = p.id
+            GROUP BY anno, mes
+            ORDER BY anno, mes ASC;
+        ";
+
+        return $conn->executeQuery($sql)->fetchAllAssociative();
+    }
+
 }

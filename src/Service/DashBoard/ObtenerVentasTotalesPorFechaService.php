@@ -19,34 +19,24 @@ class ObtenerVentasTotalesPorFechaService
         $response = new JsonResponse();
         $ventasAgrupadas = [];
 
-        $fechaLimite = (new \DateTime())->modify('-3 months');
-
         foreach ($ventas as $venta) {
-            $fechaVenta = $venta->getDate();
+            $fecha = $venta->getDate()->format('Y-m-d');
 
-            if ($fechaVenta >= $fechaLimite) { // Filtrar solo las ventas dentro del rango de 3 meses
-                $fecha = $fechaVenta->format('Y-m-d');
-
-                if (!isset($ventasAgrupadas[$fecha])) {
-                    $ventasAgrupadas[$fecha] = [
-                        'totalVentas' => 0,
-                        'cantidadVentas' => 0
-                    ];
-                }
-
-                $ventasAgrupadas[$fecha]['cantidadVentas']++;
-                $ventasAgrupadas[$fecha]['totalVentas'] += (int) $venta->getAmount();
+            if (!isset($ventasAgrupadas[$fecha])) {
+                $ventasAgrupadas[$fecha] = [
+                    'totalVentas' => 0,
+                    'cantidadVentas' => 0
+                ];
             }
+
+            $ventasAgrupadas[$fecha]['cantidadVentas']++;
+            $ventasAgrupadas[$fecha]['totalVentas'] += (int) $venta->getAmount();
         }
 
-        $labels = array_keys($ventasAgrupadas);
-        $totales = array_column($ventasAgrupadas, 'totalVentas');
-        $cantidades = array_column($ventasAgrupadas, 'cantidadVentas');
-
         $resul = [
-            'labels' => $labels,
-            'totales' => $totales,
-            'cantidades' => $cantidades
+            'labels' => array_keys($ventasAgrupadas),
+            'totales' => array_column($ventasAgrupadas, 'totalVentas'),
+            'cantidades' => array_column($ventasAgrupadas, 'cantidadVentas')
         ];
 
         $response->setData([

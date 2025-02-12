@@ -90,3 +90,27 @@ api_dash_productoVendidoPorMes:
   path: /api/dash/productoMensual
   controller: App\Controller\DashBoard\ProductoVendidoPorMesController
   methods: GET
+api_dash_totalIngresos:
+  path: /api/dash/ingresos
+  controller: App\Controller\DashBoard\ObtenerTotalIngresosController
+  methods: GET
+api_dash_totalCoste:
+  path: /api/dash/coste
+  controller: App\Controller\DashBoard\ObtenerTotalGastosController
+  methods: GET
+api_dash_gananciaNeta:
+  path: /api/dash/gananciaNeta
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaController
+  methods: GET
+api_dash_gananciaNetaPorDia:
+  path: /api/dash/gananciaNetaDia
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorDiaController
+  methods: GET
+api_dash_gananciaNetaPorSemana:
+  path: /api/dash/gananciaNetaSemana
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorSemanaController
+  methods: GET
+api_dash_gananciaNetaPorMes:
+  path: /api/dash/gananciaNetaMes
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorMesController
+  methods: GET
