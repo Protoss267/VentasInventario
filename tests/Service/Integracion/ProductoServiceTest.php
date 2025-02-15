@@ -22,15 +22,18 @@ class ProductoServiceTest extends KernelTestCase
 //        $this->assertEquals('1', $product->getCodigo());
 //    }
 
-    //Prueba de Integracion
-    public function testProductoPersistedInDatabase(): void
+    //Prueba Unitaria
+    public function testProductoCreate(): void
     {
         self::bootKernel();
 
         $productRepo = self::$container->get(ProductRepository::class);
-        $producto = $productRepo->findOneByCod( '1234567');
+        $pro = new Product('1112','prueba1',1,10,46);
+        $productRepo->save($pro);
+
+        $producto= $productRepo->findOneByCod('1112');
 
         $this->assertNotNull($producto);
-        $this->assertEquals('productoPrueba', $producto->getName());
+        $this->assertEquals('prueba1', $producto->getName());
     }
 }

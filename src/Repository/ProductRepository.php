@@ -43,10 +43,12 @@ class ProductRepository extends BaseRepository
         return $this->objectRepository->findOneBy(['codigo'=>$cod]);
     }
 
-    public function GetLowStock()
+    public function GetLowStock(int $umbral=100)
     {
-        return$this->objectRepository->createQueryBuilder('p')
-            ->where('p.stock < 100')
+        return $this->objectRepository->createQueryBuilder('p')
+            ->where('p.stock < :umbral')
+            ->setParameter('umbral',$umbral)
             ->getQuery()->getResult();
     }
+
 }

@@ -1,9 +1,12 @@
 <?php
 
+
+
 namespace App\Service\DashBoard;
 
 use App\Repository\SoldRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 class ObtenerTotalCosteService
 {
@@ -17,11 +20,17 @@ class ObtenerTotalCosteService
 
         $resul= $this->soldRepository->getTotalCostos();
 
-        $response->setData([
-            'success'=>true,
-            'data'=>$resul
-        ]);
+          $response->setData([
+                'success'=>true,
+                'data'=>$resul
+            ]);
 
         return $response;
+
     }
 }
+
+
+
+
+

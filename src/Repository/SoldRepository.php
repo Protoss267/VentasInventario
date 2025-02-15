@@ -170,8 +170,8 @@ class SoldRepository extends BaseRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "
-            SELECT 
-                DATE(v.fecha_venta) AS fecha, 
+            SELECT
+                DATE(v.fecha_venta) AS fecha,
                 SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
             FROM sold v
             JOIN item i ON v.id = i.sold_id
@@ -181,6 +181,7 @@ class SoldRepository extends BaseRepository
         ";
 
         return $conn->executeQuery($sql)->fetchAllAssociative();
+
     }
 
     public function getGananciaNetaPorSemana(): array

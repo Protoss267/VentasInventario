@@ -114,3 +114,7 @@ api_dash_gananciaNetaPorMes:
   path: /api/dash/gananciaNetaMes
   controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorMesController
   methods: GET
+api_dash_bajaExistencia:
+  path: /api/dash/bajaExistencia/{umbral}
+  controller: App\Controller\DashBoard\ProductoBajaExistenciaController
+  methods: GET
