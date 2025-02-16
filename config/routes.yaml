@@ -118,3 +118,11 @@ api_dash_bajaExistencia:
   path: /api/dash/bajaExistencia/{umbral}
   controller: App\Controller\DashBoard\ProductoBajaExistenciaController
   methods: GET
+api_dash_margenGanancia:
+  path: /api/dash/margenGanancia
+  controller: App\Controller\DashBoard\ObtenerMargenGanaciaController
+  methods: GET
+api_dash_crecimientoVentas:
+  path: /api/dash/creciminetoVentas
+  controller: App\Controller\DashBoard\CrecimientoVentasController
+  methods: GET

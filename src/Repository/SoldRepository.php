@@ -220,4 +220,45 @@ class SoldRepository extends BaseRepository
         return $conn->executeQuery($sql)->fetchAllAssociative();
     }
 
+    public function calcularVentasPeriodoActual(): float
+    {
+        $fechaPrueba = new \DateTimeImmutable('2024-08-15'); // Cambia la fecha según necesites
+
+        // Calcular el primer y último día del mes basado en la fecha de prueba
+        $inicioMesActual = $fechaPrueba->modify('first day of this month')->setTime(0, 0, 0);
+        $finMesActual = $fechaPrueba->modify('last day of this month')->setTime(23, 59, 59);
+//        $inicioMesActual = new \DateTimeImmutable('first day of this month 00:00:00');
+//        $finMesActual = new \DateTimeImmutable('last day of this month 23:59:59');
+
+        $resultado= $this->objectRepository->createQueryBuilder('v')
+            ->select('SUM(v.amount) as total')
+            ->where('v.date BETWEEN :inicio AND :fin')
+            ->setParameter('inicio', $inicioMesActual)
+            ->setParameter('fin', $finMesActual)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (float) $resultado;
+    }
+
+    public function calcularVentasPeriodoAnterior(): float
+    {
+        $fechaPrueba = new \DateTimeImmutable('2024-08-01'); // Cambia la fecha según necesites
+
+        // Calcular el primer y último día del mes anterior basado en la fecha de prueba
+        $inicioMesAnterior = $fechaPrueba->modify('first day of last month')->setTime(0, 0, 0);
+        $finMesAnterior = $fechaPrueba->modify('last day of last month')->setTime(23, 59, 59);
+//        $inicioMesAnterior = new \DateTimeImmutable('first day of last month 00:00:00');
+//        $finMesAnterior = new \DateTimeImmutable('last day of last month 23:59:59');
+
+        $resultado = $this->objectRepository->createQueryBuilder('v')
+            ->select('SUM(v.amount) as total')
+            ->where('v.date BETWEEN :inicio AND :fin')
+            ->setParameter('inicio', $inicioMesAnterior)
+            ->setParameter('fin', $finMesAnterior)
+            ->getQuery()
+            ->getSingleScalarResult();
+        return (float) $resultado;
+    }
+
 }
