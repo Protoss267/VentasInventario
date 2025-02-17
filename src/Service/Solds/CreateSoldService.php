@@ -36,7 +36,7 @@ class CreateSoldService
         $data=json_decode($request->getContent(),true);
         $sold= new Sold($data['transfer']);
 
-        $items=[];
+
         if(count($data['products'])<1)
         {
             $respuesta=[

@@ -74,11 +74,55 @@ api_sold_byRange:
   methods: POST
 
 #Dashboard
-api_dashboard_byWeek:
-  path: /api/dash/week
-  controller: App\Controller\DashBoard\ObtenerVentasSemanalesController
+api_dash_ventasPorFecha:
+  path: /api/dash/ventasPorFecha
+  controller: App\Controller\DashBoard\ObtenerVentasTotalesPorFechaController
   methods: GET
-api_dashboard_gananciasMensuales:
-  path: /api/dash/gananciamensual
-  controller: App\Controller\DashBoard\ObtenerGananciasMensualesController
+api_dash_ventasPorFechaSemanaAnno:
+  path: /api/dash/ventasPorSemanaAnoo
+  controller: App\Controller\DashBoard\ObtenerVentasTotalesPorSemanaYAnnoController
+  methods: GET
+api_dash_ventasPorFechaMesAnno:
+  path: /api/dash/ventasPorMesAnno
+  controller: App\Controller\DashBoard\ObtenerVentasTotalesPorMesYAnnoController
+  methods: GET
+api_dash_productoVendidoPorMes:
+  path: /api/dash/productoMensual
+  controller: App\Controller\DashBoard\ProductoVendidoPorMesController
+  methods: GET
+api_dash_totalIngresos:
+  path: /api/dash/ingresos
+  controller: App\Controller\DashBoard\ObtenerTotalIngresosController
+  methods: GET
+api_dash_totalCoste:
+  path: /api/dash/coste
+  controller: App\Controller\DashBoard\ObtenerTotalGastosController
+  methods: GET
+api_dash_gananciaNeta:
+  path: /api/dash/gananciaNeta
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaController
+  methods: GET
+api_dash_gananciaNetaPorDia:
+  path: /api/dash/gananciaNetaDia
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorDiaController
+  methods: GET
+api_dash_gananciaNetaPorSemana:
+  path: /api/dash/gananciaNetaSemana
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorSemanaController
+  methods: GET
+api_dash_gananciaNetaPorMes:
+  path: /api/dash/gananciaNetaMes
+  controller: App\Controller\DashBoard\ObtenerGanaciaNetaPorMesController
+  methods: GET
+api_dash_bajaExistencia:
+  path: /api/dash/bajaExistencia/{umbral}
+  controller: App\Controller\DashBoard\ProductoBajaExistenciaController
+  methods: GET
+api_dash_margenGanancia:
+  path: /api/dash/margenGanancia
+  controller: App\Controller\DashBoard\ObtenerMargenGanaciaController
+  methods: GET
+api_dash_crecimientoVentas:
+  path: /api/dash/creciminetoVentas
+  controller: App\Controller\DashBoard\CrecimientoVentasController
   methods: GET

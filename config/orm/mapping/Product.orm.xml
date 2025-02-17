@@ -19,10 +19,10 @@
             <index columns="codigo" name="cod_idx"/>
             <index columns="name" name="name_idx"/>
         </indexes>
-
         <unique-constraints>
-            <unique-constraint name="U_cod" columns="codigo"/>
+            <unique-constraint columns="codigo" name="Ucodigo"/>
         </unique-constraints>
+
 
 
 

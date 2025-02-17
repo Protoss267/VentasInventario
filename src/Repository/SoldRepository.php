@@ -5,9 +5,13 @@ namespace App\Repository;
 
 
 use App\Entity\Sold;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class SoldRepository extends BaseRepository
 {
+
+
 
     protected static function entityClass(): string
     {
@@ -62,67 +66,199 @@ class SoldRepository extends BaseRepository
             ->getResult();
     }
 
-    public function getSoldByWeek()
+    public function findAllOrderedByDate(): array
     {
-        $conn = $this->getEntityManager()->getConnection();
-        $sql = "
-        SELECT DATE(fecha_venta) AS dia, COUNT(id) AS total_ventas
-        FROM sold
-        WHERE fecha_venta BETWEEN :fechaInicio AND :fechaFin
-        GROUP BY dia
-        ORDER BY dia ASC
-    ";
-
-        $resultados = $conn->executeQuery($sql, [
-            'fechaInicio' => (new \DateTime('2024-08-23 00:00:00'))->modify('-6 days')->format('Y-m-d 00:00:00'),
-            'fechaFin'    => (new \DateTime('2024-08-23 00:00:00'))->format('Y-m-d 23:59:59'),
-        ])->fetchAllAssociative();
-
-        $ventasPorDia = [];
-        foreach ($resultados as $resultado) {
-            $ventasPorDia[$resultado['dia']] = (int) $resultado['total_ventas'];
-        }
-
-        return $ventasPorDia;
+        return $this->objectRepository->createQueryBuilder('s')
+            ->orderBy('s.date', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
-    public function obtenerGanaciasMensuales()
+    public function getVentasUltimosSeisMesesAgrupadas()
     {
-        // Obtener la fecha actual
-        $currentDate = new \DateTime('2024-10-06 00:00:00');
+        $fechaLimite = new \DateTime('-6 months');
 
-        // Generar la fecha de hace 12 meses
-        $startOf12MonthsAgo = (clone $currentDate)->modify('-12 months');
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('fecha', 'fecha');
+        $rsm->addScalarResult('totalVentas', 'totalVentas');
+        $rsm->addScalarResult('cantidadVentas', 'cantidadVentas');
 
-        // Consulta SQL nativa para obtener las ganancias por mes
+        $sql = "
+    SELECT 
+        DATE_FORMAT(v.fecha_venta, '%Y-%m-%d') AS fecha, 
+        SUM(v.total) AS totalVentas, 
+        COUNT(v.id) AS cantidadVentas
+    FROM sold v
+    WHERE v.fecha_venta >= :fechaLimite
+    GROUP BY fecha
+    ORDER BY fecha ASC
+";
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter('fechaLimite', $fechaLimite->format('Y-m-d'));
+
+        return $query->getResult();
+    }
+
+    public function getVentasAgrupadasPorMes()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('year', 'year');
+        $rsm->addScalarResult('month', 'month');
+        $rsm->addScalarResult('totalVentas', 'totalVentas');
+        $rsm->addScalarResult('cantidadVentas', 'cantidadVentas');
+
+        $sql = "
+            SELECT 
+                YEAR(v.fecha_venta) AS year, 
+                MONTH(v.fecha_venta) AS month, 
+                SUM(v.total) AS totalVentas, 
+                COUNT(v.id) AS cantidadVentas
+            FROM sold v
+            WHERE v.fecha_venta >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+            GROUP BY year, month
+            ORDER BY year ASC, month ASC
+        ";
+
+        return $this->getEntityManager()->createNativeQuery($sql, $rsm)->getResult();
+    }
+
+
+
+    public function obtenerVentasPorMes(int $mes, int $anno): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "
+            SELECT 
+                p.name AS producto,
+                SUM(i.amount) AS cantidad_vendida
+            FROM item i
+            JOIN product p ON i.product_id = p.id
+            JOIN sold s ON i.sold_id = s.id
+            WHERE YEAR(s.fecha_venta) = :year
+            AND MONTH(s.fecha_venta) = :month
+            GROUP BY p.name
+            ORDER BY cantidad_vendida DESC
+        ";
+
+        $stmt = $conn->prepare($sql);
+       return $stmt->executeQuery(['year' => $anno, 'month' => $mes])->fetchAllAssociative();
+
+
+    }
+
+    public function getTotalIngresos(): float
+    {
+        return (float)$this->objectRepository->createQueryBuilder('s')
+            ->select('SUM(s.amount) AS total')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getTotalCostos(): float
+    {
+        return (float) $this->objectRepository->createQueryBuilder('v')
+            ->select('SUM(i.amount * p.priceI) as total_costos')
+            ->join('v.items', 'i') // Relación con Item
+            ->join('i.product', 'p') // Relación con Producto
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getGananciaNetaPorDia(): array
+    {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "
             SELECT
-                YEAR(s.fecha_venta) AS year,
-                MONTH(s.fecha_venta) AS month,
-                SUM(s.total) AS totalEarnings
-            FROM sold s
-            WHERE s.fecha_venta >= :startDate
-            AND s.fecha_venta <= :endDate
-            GROUP BY YEAR(s.fecha_venta), MONTH(s.fecha_venta)
-            ORDER BY YEAR(s.fecha_venta) DESC, MONTH(s.fecha_venta) DESC
+                DATE(v.fecha_venta) AS fecha,
+                SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
+            FROM sold v
+            JOIN item i ON v.id = i.sold_id
+            JOIN product p ON i.product_id = p.id
+            GROUP BY fecha
+            ORDER BY fecha ASC;
         ";
 
-        $results = $conn->executeQuery($sql, [
-            'startDate' =>  $startOf12MonthsAgo->format('Y-m-d'),
-            'endDate'    => $currentDate->format('Y-m-d'),
-        ])->fetchAllAssociative();
+        return $conn->executeQuery($sql)->fetchAllAssociative();
 
+    }
 
+    public function getGananciaNetaPorSemana(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                YEAR(v.fecha_venta) AS anno, 
+                WEEK(v.fecha_venta, 1) AS semana, 
+                SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
+            FROM sold v
+            JOIN item i ON v.id = i.sold_id
+            JOIN product p ON i.product_id = p.id
+            GROUP BY anno, semana
+            ORDER BY anno, semana ASC;
+        ";
 
-        // Procesar los resultados para un formato más amigable
-        $earnings = [];
-        foreach ($results as $result) {
-            $monthYear = $result['year'] . '-' . str_pad($result['month'], 2, '0', STR_PAD_LEFT); // Formato 'YYYY-MM'
-            $earnings[$monthYear] = $result['totalEarnings'];
-        }
+        return $conn->executeQuery($sql)->fetchAllAssociative();
+    }
 
-        return $earnings;
+    public function getGananciaNetaPorMes(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                YEAR(v.fecha_venta) AS anno, 
+                MONTH(v.fecha_venta) AS mes, 
+                SUM(i.amount * (p.price_f - p.price_i)) AS ganancia_neta
+            FROM sold v
+            JOIN item i ON v.id = i.sold_id
+            JOIN product p ON i.product_id = p.id
+            GROUP BY anno, mes
+            ORDER BY anno, mes ASC;
+        ";
+
+        return $conn->executeQuery($sql)->fetchAllAssociative();
+    }
+
+    public function calcularVentasPeriodoActual(): float
+    {
+        $fechaPrueba = new \DateTimeImmutable('2024-08-15'); // Cambia la fecha según necesites
+
+        // Calcular el primer y último día del mes basado en la fecha de prueba
+        $inicioMesActual = $fechaPrueba->modify('first day of this month')->setTime(0, 0, 0);
+        $finMesActual = $fechaPrueba->modify('last day of this month')->setTime(23, 59, 59);
+//        $inicioMesActual = new \DateTimeImmutable('first day of this month 00:00:00');
+//        $finMesActual = new \DateTimeImmutable('last day of this month 23:59:59');
+
+        $resultado= $this->objectRepository->createQueryBuilder('v')
+            ->select('SUM(v.amount) as total')
+            ->where('v.date BETWEEN :inicio AND :fin')
+            ->setParameter('inicio', $inicioMesActual)
+            ->setParameter('fin', $finMesActual)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (float) $resultado;
+    }
+
+    public function calcularVentasPeriodoAnterior(): float
+    {
+        $fechaPrueba = new \DateTimeImmutable('2024-08-01'); // Cambia la fecha según necesites
+
+        // Calcular el primer y último día del mes anterior basado en la fecha de prueba
+        $inicioMesAnterior = $fechaPrueba->modify('first day of last month')->setTime(0, 0, 0);
+        $finMesAnterior = $fechaPrueba->modify('last day of last month')->setTime(23, 59, 59);
+//        $inicioMesAnterior = new \DateTimeImmutable('first day of last month 00:00:00');
+//        $finMesAnterior = new \DateTimeImmutable('last day of last month 23:59:59');
+
+        $resultado = $this->objectRepository->createQueryBuilder('v')
+            ->select('SUM(v.amount) as total')
+            ->where('v.date BETWEEN :inicio AND :fin')
+            ->setParameter('inicio', $inicioMesAnterior)
+            ->setParameter('fin', $finMesAnterior)
+            ->getQuery()
+            ->getSingleScalarResult();
+        return (float) $resultado;
     }
 
 }

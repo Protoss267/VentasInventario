@@ -5,22 +5,21 @@ namespace App\Service\DashBoard;
 use App\Repository\SoldRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ObtenerGanaciasMensualesServices
+class ObtenerTotalIngresosService
 {
-    private SoldRepository $soldRepository;
-
-    public function __construct(SoldRepository $soldRepository)
+    public function __construct(private SoldRepository $soldRepository)
     {
-        $this->soldRepository= $soldRepository;
     }
 
     public function __invoke()
     {
         $response = new JsonResponse();
-        $res=$this->soldRepository->obtenerGanaciasMensuales();
+
+
+        $resul= $this->soldRepository->getTotalIngresos();
         $response->setData([
             'success'=>true,
-            'data'=>$res
+            'data'=>$resul
         ]);
         return $response;
     }
